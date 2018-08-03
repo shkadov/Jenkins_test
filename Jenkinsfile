@@ -1,7 +1,12 @@
 node {
-    // This displays colors using the 'xterm' ansi color map.
-    ansiColor('xterm') {
-        // Just some echoes to show the ANSI color.
-        stage "\u001B[31mI'm Red\u001B[0m Now not"
-    }
+	stage 'Checkout'
+		checkout scm
+
+	stage 'Build'
+		bat 'nuget restore SolutionName.sln'
+		bat "\"${tool 'MSBuild'}\" SolutionName.sln /p:Configuration=Release /p:Platform=\"Any CPU\" /p:ProductVersion=1.0.0.${env.BUILD_NUMBER}"
+
+	stage 'Archive'
+		archive 'ProjectName/bin/Release/**'
+
 }
